@@ -1,4 +1,4 @@
-﻿# Monitorian
+﻿# Monitorian + AutoBrightness from Webcam (WIP)
 
 Monitorian is a Windows desktop tool to adjust the brightness of multiple monitors with ease.
 
