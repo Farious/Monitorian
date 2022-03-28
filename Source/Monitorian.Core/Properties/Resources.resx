@@ -120,6 +120,9 @@
   <data name="Arguments" xml:space="preserve">
     <value>Command-line arguments</value>
   </data>
+  <data name="AutoUpdateBrightness" xml:space="preserve">
+    <value>Auto-update brightness</value>
+  </data>
   <data name="ChangeContrast" xml:space="preserve">
     <value>Change contrast</value>
   </data>

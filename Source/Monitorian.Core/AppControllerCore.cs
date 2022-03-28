@@ -39,6 +39,8 @@ namespace Monitorian.Core
 		private readonly SessionWatcher _sessionWatcher;
 		private readonly PowerWatcher _powerWatcher;
 		private readonly BrightnessWatcher _brightnessWatcher;
+		private readonly BrightnessFromCamera _brightnessProvider;
+		private Timer _autoBrightness;
 
 		protected OperationRecorder Recorder { get; private set; }
 
@@ -59,6 +61,7 @@ namespace Monitorian.Core
 			_sessionWatcher = new SessionWatcher();
 			_powerWatcher = new PowerWatcher();
 			_brightnessWatcher = new BrightnessWatcher();
+			_brightnessProvider = new BrightnessFromCamera();
 		}
 
 		public virtual async Task InitiateAsync()
@@ -91,6 +94,10 @@ namespace Monitorian.Core
 				if (!_sessionWatcher.IsLocked)
 					Update(instanceName, brightness);
 			});
+
+			// Every XX minutes
+			int minutesInterval = 30;
+			_autoBrightness = new Timer((object state) => { TriggerBrightnessUpdate(); }, null, 0, minutesInterval * 60 * 1000);
 		}
 
 		public virtual void End()
@@ -104,6 +111,7 @@ namespace Monitorian.Core
 			_sessionWatcher.Dispose();
 			_powerWatcher.Dispose();
 			_brightnessWatcher.Dispose();
+			_autoBrightness.Dispose();
 		}
 
 		protected virtual Task<string> HandleRequestAsync(IReadOnlyCollection<string> args)
@@ -148,8 +156,24 @@ namespace Monitorian.Core
 		{
 			var window = new MenuWindow(this, pivot);
 			window.ViewModel.CloseAppRequested += (sender, e) => _current.Shutdown();
+			window.ViewModel.AutoBrightnessFromSource += (sender, e) => TriggerBrightnessUpdate();
 			window.MenuSectionTop.Add(new ProbeSection(this));
 			window.Show();
+		}
+
+		private void AutoBrightnessUpdate()
+		{
+			float brightness = _brightnessProvider.CalculateBrightness();
+
+			foreach (var monitor in Monitors)
+			{
+				monitor.Brightness = (int)Math.Round(brightness);
+			}
+		}
+
+		protected virtual void TriggerBrightnessUpdate()
+		{
+			AutoBrightnessUpdate();
 		}
 
 		protected virtual async void OnSettingsInitiated()

@@ -72,10 +72,14 @@ namespace Monitorian.Core.ViewModels
 
 		public event EventHandler CloseAppRequested;
 
+		public event EventHandler AutoBrightnessFromSource;
+
 		/// <summary>
 		/// Closes this application.
 		/// </summary>
 		public void CloseApp() => CloseAppRequested?.Invoke(this, EventArgs.Empty);
+
+		public void UpdateBrightness() => AutoBrightnessFromSource?.Invoke(this, EventArgs.Empty);
 
 		#region IDisposable
 
@@ -89,6 +93,7 @@ namespace Monitorian.Core.ViewModels
 			if (disposing)
 			{
 				CloseAppRequested = null;
+				AutoBrightnessFromSource = null;
 			}
 
 			_isDisposed = true;

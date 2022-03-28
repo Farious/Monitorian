@@ -70,6 +70,15 @@ namespace Monitorian.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto-update brightness.
+        /// </summary>
+        public static string AutoUpdateBrightness {
+            get {
+                return ResourceManager.GetString("AutoUpdateBrightness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Change contrast.
         /// </summary>
         public static string ChangeContrast {
